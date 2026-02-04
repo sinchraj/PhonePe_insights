@@ -121,6 +121,7 @@ export function InsightOverlay({ insights, onClose, onMarkSeen }: InsightOverlay
             insight={currentInsight}
             onFeedback={(feedbackValue) => handleFeedback(currentInsight.id, feedbackValue)}
             selectedFeedback={feedback[currentInsight.id] || null}
+            onNext={goToNext}
           />
         </div>
       </div>

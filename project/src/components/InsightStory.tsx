@@ -15,10 +15,26 @@ interface InsightStoryProps {
   insight: Insight;
   onFeedback: (feedback: 'spot_on' | 'miss') => void;
   selectedFeedback: 'spot_on' | 'miss' | null;
+  onNext?: () => void; // Add onNext callback
 }
 
-export function InsightStory({ insight, onFeedback, selectedFeedback }: InsightStoryProps) {
+export function InsightStory({ insight, onFeedback, selectedFeedback, onNext }: InsightStoryProps) {
   const [expanded, setExpanded] = useState(false);
+
+  const handleFeedbackClick = (feedbackValue: 'spot_on' | 'miss') => {
+    onFeedback(feedbackValue);
+    // Advance to next story after a short delay
+    setTimeout(() => {
+      if (onNext) {
+        onNext();
+      }
+    }, 500);
+  };
+      if (onNext) {
+        onNext();
+      }
+    }, 500);
+  };
 
   const getInsightImage = (type: string, category?: string, illustration?: string) => {
     // Handle monthly insights with specific illustrations
@@ -119,9 +135,9 @@ export function InsightStory({ insight, onFeedback, selectedFeedback }: InsightS
   const quirkyContent = getQuirkyContent(insight.type, insight);
 
   return (
-    <div className="h-full flex flex-col items-center justify-between py-12 px-6">
+    <div className="h-full flex flex-col items-center justify-between py-8 px-6 max-h-screen overflow-hidden">
       {/* Image Section */}
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center min-h-0">
         <div className="relative">
           <div className="w-48 h-48 rounded-3xl bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center shadow-lg">
             <img 
@@ -137,27 +153,27 @@ export function InsightStory({ insight, onFeedback, selectedFeedback }: InsightS
       </div>
 
       {/* Content Section */}
-      <div className="w-full max-w-sm space-y-6">
-        <div className="text-center space-y-4">
-          <h2 className="text-2xl font-bold text-gray-900 leading-tight">
+      <div className="w-full max-w-sm space-y-4 flex-shrink-0">
+        <div className="text-center space-y-3">
+          <h2 className="text-xl font-bold text-gray-900 leading-tight">
             {quirkyContent.title}
           </h2>
-          <p className="text-lg text-gray-600 leading-relaxed">
+          <p className="text-base text-gray-600 leading-relaxed">
             {quirkyContent.subtitle}
           </p>
 
           {!expanded && (
             <button
               onClick={() => setExpanded(true)}
-              className="inline-flex items-center gap-2 text-purple-600 text-sm font-semibold mt-4 px-4 py-2 rounded-full bg-purple-50 hover:bg-purple-100 transition-all duration-200"
+              className="inline-flex items-center gap-2 text-purple-600 text-sm font-semibold mt-3 px-4 py-2 rounded-full bg-purple-50 hover:bg-purple-100 transition-all duration-200"
             >
               Tell me more 📖
             </button>
           )}
 
           {expanded && (
-            <div className="mt-6 p-4 bg-gray-50 rounded-2xl animate-expand">
-              <p className="text-base text-gray-700 leading-relaxed">
+            <div className="mt-4 p-4 bg-gray-50 rounded-2xl animate-expand">
+              <p className="text-sm text-gray-700 leading-relaxed">
                 {quirkyContent.details}
               </p>
             </div>
@@ -165,27 +181,33 @@ export function InsightStory({ insight, onFeedback, selectedFeedback }: InsightS
         </div>
 
         {/* Feedback Buttons */}
-        <div className="flex items-center justify-center gap-4 pt-6">
+        <div className="flex items-center justify-center gap-4 pt-4">
           <button
-            onClick={() => onFeedback('spot_on')}
-            className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-200 ${
+            onClick={(e) => {
+              e.stopPropagation();
+              handleFeedbackClick('spot_on');
+            }}
+            className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-base transition-all duration-200 ${
               selectedFeedback === 'spot_on'
                 ? 'bg-green-500 text-white shadow-xl scale-105 shadow-green-500/30'
                 : 'bg-green-50 text-green-600 hover:bg-green-100 hover:scale-105 border-2 border-green-200'
             }`}
           >
-            <span className="text-xl">🎯</span>
+            <span className="text-lg">🎯</span>
             Spot on
           </button>
           <button
-            onClick={() => onFeedback('miss')}
-            className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-200 ${
+            onClick={(e) => {
+              e.stopPropagation();
+              handleFeedbackClick('miss');
+            }}
+            className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-base transition-all duration-200 ${
               selectedFeedback === 'miss'
                 ? 'bg-orange-500 text-white shadow-xl scale-105 shadow-orange-500/30'
                 : 'bg-orange-50 text-orange-600 hover:bg-orange-100 hover:scale-105 border-2 border-orange-200'
             }`}
           >
-            <span className="text-xl">🤔</span>
+            <span className="text-lg">🤔</span>
             Not quite
           </button>
         </div>
