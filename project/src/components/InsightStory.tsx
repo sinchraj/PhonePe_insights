@@ -30,11 +30,6 @@ export function InsightStory({ insight, onFeedback, selectedFeedback, onNext }: 
       }
     }, 500);
   };
-      if (onNext) {
-        onNext();
-      }
-    }, 500);
-  };
 
   const getInsightImage = (type: string, category?: string, illustration?: string) => {
     // Handle monthly insights with specific illustrations
